@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DoorSync</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-panel">
+      <div class="login-brand brand-block">
+        <div class="brand-mark">DS</div>
+        <div>
+          <h1>DoorSync</h1>
+          <p>Classroom access, coordinated.</p>
+        </div>
+      </div>
+      <div class="login-copy">
+        <p class="eyebrow">Sign in</p>
+        <h2>Welcome back</h2>
+        <p>Use your NU Baliwag email and the demo password to continue.</p>
+      </div>
+      <form class="login-form" id="loginForm">
+        <div>
+          <label class="field-label" for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@nu-baliwag.edu.ph" autocomplete="username" required />
+        </div>
+        <div>
+          <label class="field-label" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="doorsync123" autocomplete="current-password" required />
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button class="primary-button" type="submit">Sign in</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APP SHELL -->
+  <div class="app-shell hidden" id="appShell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">DS</div>
+        <div>
+          <h1>DoorSync</h1>
+          <p>NU Baliwag</p>
+        </div>
+      </div>
+
+      <nav class="role-tabs">
+        <button class="role-tab active" type="button" data-role="student"><span>🎓</span> Student</button>
+        <button class="role-tab" type="button" data-role="professor"><span>🧑‍🏫</span> Professor</button>
+        <button class="role-tab" type="button" data-role="personnel"><span>🛠️</span> Personnel</button>
+      </nav>
+
+      <div class="sidebar-panel">
+        <h2>At a glance</h2>
+        <dl class="status-stack">
+          <div>
+            <dt>Locked rooms</dt>
+            <dd id="lockedRoomCount">0</dd>
+          </div>
+          <div id="pendingRequestSummary">
+            <dt>Pending requests</dt>
+            <dd id="pendingRequestCount">0</dd>
+          </div>
+          <div>
+            <dt>Available professors</dt>
+            <dd id="availableProfessorCount">0</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="signed-in-user" id="signedInUser"></div>
+
+      <button class="ghost-button" id="resetData" type="button">Reset demo data</button>
+      <button class="ghost-button" id="logoutButton" type="button">Log out</button>
+    </aside>
+
+    <main class="main-content">
+      <div class="topbar">
+        <div>
+          <p class="eyebrow" id="roleEyebrow">Student view</p>
+          <h2 id="pageTitle">Classroom status</h2>
+        </div>
+        <div class="clock-card">
+          <span id="todayLabel"></span>
+          <strong id="timeLabel"></strong>
+        </div>
+      </div>
+
+      <!-- STUDENT VIEW -->
+      <section class="view active" id="studentView">
+        <div class="section-heading flush">
+          <div>
+            <h3>Classroom status</h3>
+            <p>Live lock and unlock status for every room.</p>
+          </div>
+        </div>
+        <div class="room-status-grid" id="studentRooms"></div>
+
+        <div class="section-heading">
+          <div>
+            <h3>Professor availability</h3>
+            <p>See who is currently available on campus.</p>
+          </div>
+        </div>
+        <div class="card-grid" id="studentProfessors"></div>
+      </section>
+
+      <!-- PROFESSOR VIEW -->
+      <section class="view" id="professorView">
+        <div class="action-layout">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Update your status</h3>
+              <p>Let students and personnel know if you're free.</p>
+            </div>
+
+            <label class="field-label" for="professorSelect">Professor</label>
+            <select id="professorSelect"></select>
+
+            <div class="selected-status" id="selectedProfessorStatus"></div>
+
+            <div class="toggle-row">
+              <button class="status-action" id="setAvailable" type="button" aria-pressed="false">Available</button>
+              <button class="status-action warning" id="setOccupied" type="button" aria-pressed="false">Occupied</button>
+            </div>
+
+            <label class="field-label" for="roomSelect">Room to unlock</label>
+            <select id="roomSelect"></select>
+
+            <button class="primary-button" id="notifyPersonnel" type="button">Notify personnel</button>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Recent activity</h3>
+              <p>What's been happening across campus.</p>
+            </div>
+            <div class="timeline" id="professorActivity"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERSONNEL VIEW -->
+      <section class="view" id="personnelView">
+        <div class="section-heading flush">
+          <div>
+            <h3>Pending requests</h3>
+            <p>Unlock requests waiting for you.</p>
+          </div>
+        </div>
+        <div class="request-list" id="pendingRequests"></div>
+
+        <div class="action-layout">
+          <div>
+            <div class="section-heading">
+              <div>
+                <h3>Unlocked rooms</h3>
+                <p>Currently open — mark them locked once you're done.</p>
+              </div>
+            </div>
+            <div class="request-list compact" id="unlockedRooms"></div>
+
+            <div class="section-heading">
+              <div>
+                <h3>Completed requests</h3>
+                <p>Recently resolved unlock requests.</p>
+              </div>
+            </div>
+            <div class="request-list compact" id="completedRequests"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Room detail</h3>
+              <p>Tap "View room" on a request to see its subscribers.</p>
+            </div>
+            <div class="room-detail empty-state" id="roomDetail">No room selected.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
